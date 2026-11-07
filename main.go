@@ -29,18 +29,20 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.count--
 		case "q", "ctrl+c":
 			return m, tea.Quit
+		case "r":
+			m.count = 0
 		}
 	}
 
 	return m, nil
 }
 
-// View describnes what appears in the terminal
+// View describes what appears in the terminal
 func (m model) View() string {
 	return fmt.Sprintf(
 		"My first Go TUI\n\n"+
 			"Counter: %d\n\n"+
-			"+ increase | - decrease | q quit\n",
+			"+ increase | - decrease | r reset | q quit\n",
 		m.count,
 	)
 }
