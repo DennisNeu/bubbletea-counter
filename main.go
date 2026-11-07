@@ -26,7 +26,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "+":
 			m.count++
 		case "-":
-			m.count--
+			if m.count == 0 {
+				return m, nil
+			} else {
+				m.count--
+			}
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "r":
