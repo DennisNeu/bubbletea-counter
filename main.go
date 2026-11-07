@@ -10,6 +10,7 @@ import (
 // Model holds the application's state
 type model struct {
 	count int
+	step  int
 }
 
 // Init runs when the program starts
@@ -24,17 +25,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "+":
-			m.count++
+			m.count = m.count + m.step
 		case "-":
-			if m.count == 0 {
-				return m, nil
-			} else {
-				m.count--
-			}
+			m.count = max(m.count-m.step, 0)
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "r":
 			m.count = 0
+		case "s":
+			if m.step == 1 {
+				m.step = 5
+			} else {
+				m.step = 1
+			}
 		}
 	}
 
@@ -46,14 +49,15 @@ func (m model) View() string {
 	return fmt.Sprintf(
 		"My first Go TUI\n\n"+
 			"Counter: %d\n\n"+
-			"+ increase | - decrease | r reset | q quit\n",
+			"Step: %d\n\n"+
+			"+ increase | - decrease | s step | r reset | q quit\n",
 		m.count,
+		m.step,
 	)
 }
 
 func main() {
-	p := tea.NewProgram(model{})
-
+	p := tea.NewProgram(model{step: 1})
 	if _, err := p.Run(); err != nil {
 		fmt.Println("Error:", err)
 		os.Exit(1)
